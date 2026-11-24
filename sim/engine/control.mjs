@@ -5,10 +5,13 @@ export function delayMaximum(option) {
   return option?.endsWith('ms') ? parseFloat(option) / 1000 : parseFloat(option || '1s')
 }
 
-// bench 2026-11-23 zoia_ir 001: 7.748 s at raw 2142. Preserve the next
-// published anchor and interpolate either side of the measured low-rate point.
+// See CALIBRATION.md for hardware measurements.
+const lfoSlowPosition = 1050 / 65535
+const lfoSlowRate = 0.06131662
 const lfoBenchPosition = 2142 / 65535
-const lfoBenchRate = 1 / 7.748
+const lfoBenchRate = 0.12906869
+const lfoBenchExponent = 1.04396
+const lfoBenchSpan = (lfoBenchPosition / lfoSlowPosition) ** lfoBenchExponent - 1
 
 export const controls = {
   4(m) {
@@ -41,7 +44,12 @@ export const controls = {
       let hz
       if (o.input === 'tap') hz = sampleRate / period(p('tap_control'))
       else if (o.input === 'linear_cv') hz = 40 * position
-      else if (position <= lfoBenchPosition) hz = lfoBenchRate * position / lfoBenchPosition
+      // ASSUMPTION: Below the measured range, continue linearly to zero.
+      else if (position < lfoSlowPosition) hz = lfoSlowRate * position / lfoSlowPosition
+      else if (position <= lfoBenchPosition) {
+        const progress = ((position / lfoSlowPosition) ** lfoBenchExponent - 1) / lfoBenchSpan
+        hz = blend(lfoSlowRate, lfoBenchRate, progress)
+      }
       else if (position < 0.25) hz = blend(lfoBenchRate, 1.53, (position - lfoBenchPosition) / (0.25 - lfoBenchPosition))
       else hz = unit('cv_control')
       const y = o.waveform === 'random' ? held : wave(o.waveform, phase + 2 * (p('phase_input', 0.5) - 0.5),

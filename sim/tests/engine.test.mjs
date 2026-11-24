@@ -63,6 +63,29 @@ test('Delay Line hits the selected delay in samples', () => {
   assert.equal(out.reduce((sum, value) => sum + value, 0), 1)
 })
 
+test('Delay Line matches the three v2 hardware impulse lags', () => {
+  for (const [setting, lag] of [[16384, 72], [32768, 133], [49152, 640]]) {
+    const [out] = render(insert(module(13, [], [setting]), 0, 4), impulse(700))
+    assert.equal(out.findIndex(Boolean), lag)
+    assert.equal(out[lag], 1)
+  }
+})
+
+test('Delay w/Mod adds 64 samples once on the wet path', () => {
+  const [wet] = render(insert(module(43, [2], [65535, 32768, 32768, 32768, 0]), 0, 8), impulse(100000))
+  const pulse = window => {
+    const gain = window.reduce((sum, x) => sum + x, 0)
+    const center = window.reduce((sum, x, i) => sum + i * x, 0) / gain
+    return { gain, center }
+  }
+  const first = pulse(wet.subarray(0, 60000))
+  const second = pulse(wet.subarray(60000))
+  const spacing = 60000 + second.center - first.center
+  near(spacing, 49489, 1)
+  near(first.center - spacing, 64, 0.001)
+  near(second.gain / first.gain, 0.5, 0.001)
+})
+
 test('Buffer Delay and graph feedback have exact integer sample offsets', () => {
   const [buf] = render(insert(module(26, [2]), 0, 1), impulse(200))
   assert.equal(buf.findIndex(Boolean), 128)
@@ -95,6 +118,20 @@ test('LFO sine keeps its specified rate through short blocks', () => {
   const [out] = render(engine, new Float64Array(sampleRate))
   near(out[12345], Math.sin(2 * Math.PI * 5.4 * 12345 / sampleRate), 1e-7)
   assert.equal(out.filter((x, i) => i > 0 && x > 0 && out[i - 1] <= 0).length, 6)
+})
+
+test('LFO uses the measured slow anchors, taper, and upper calibration', () => {
+  const progress = ((1500 / 1050) ** 1.04396 - 1) / ((2142 / 1050) ** 1.04396 - 1)
+  for (const [position, hz] of [
+    [0, 0], [525 / 65535, 0.06131662 / 2], [1050 / 65535, 0.06131662],
+    [1500 / 65535, 0.06131662 + (0.12906869 - 0.06131662) * progress],
+    [2142 / 65535, 0.12906869], [0.25, 1.53],
+  ]) {
+    const engine = createEngine(patch([module(5, [1, 0, 1]), module(2)], [wire(0, 3, 1, 0)]))
+    engine.set(0, 'cv_control', position)
+    const [out] = render(engine, new Float64Array(1001))
+    near(out[1000], Math.sin(2 * Math.PI * hz * 1000 / sampleRate))
+  }
 })
 
 test('wet Reverb Lite produces a decaying tail and flushes tiny inputs', () => {

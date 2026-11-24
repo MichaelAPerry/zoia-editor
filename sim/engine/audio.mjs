@@ -50,6 +50,7 @@ export const audio = {
     const line = delayLine(max)
     const period = tap(clamp(u32(0, sampleRate / 2), 1, max))
     const clocked = options.tap_tempo_in === 'yes'
+    const benchOption = options.max_time === '1s' && options.interpolation === 'on'
     const key = clocked ? 'modulation_in' : 'delay_time'
     return () => {
       const position = clamp(p(key))
@@ -59,9 +60,20 @@ export const audio = {
         samples = period(p('tap_tempo_in')) + amount * max
       } else if (options['CV Input'] === 'linear') {
         samples = position * max
+      } else if (benchOption) {
+        // See CALIBRATION.md for hardware measurements.
+        // Slots 012–014 give 72, 133 and 640 samples at quarter-scale steps.
+        const lo = 16384 / 65535, hi = 49152 / 65535
+        if (position < lo) {
+          // ASSUMPTION: unmeasured; geometric from 1 sample up to the measured 72 so the knob stays continuous.
+          samples = Math.max(1, Math.trunc(72 ** (position / lo)))
+        } else if (position <= hi) {
+          samples = 64 + Math.trunc(4800 ** (position * 65535 / 65536))
+        } else {
+          // ASSUMPTION: unmeasured; geometric from the measured 640 up to full capacity so the knob stays continuous.
+          samples = Math.trunc(640 * ((max - 65) / 640) ** ((position - hi) / (1 - hi)))
+        }
       } else {
-        // bench 2026-11-23 zoia_ir 012–014: absolute lag is unobserved.
-        // Use the firmware curve from re/FINDINGS.md for the rate knob.
         samples = clamp(Math.trunc(max ** (position * 65535 / 65536)), 1, max - 65)
       }
       put('audio_out', line.read(samples, options.interpolation === 'on'))
@@ -249,6 +261,10 @@ function echo(m) {
   const pingPong = id === 75
   const left = delayLine(2.1 * sampleRate)
   const right = has('audio_out_R') ? delayLine(2.1 * sampleRate) : undefined
+  // See CALIBRATION.md for hardware measurements.
+  // Delay w/Mod adds one 64-sample block to the wet path outside the feedback loop.
+  const wetPathL = id === 43 ? delayLine(64) : undefined
+  const wetPathR = id === 43 && right ? delayLine(64) : undefined
   const tempo = tap(clamp(u32(0, sampleRate / 2), 1, 2 * sampleRate))
   const [num, den] = (options.tap_ratio || '1:1').split(':').map(Number)
   let phase = 0, toneL = 0, toneR = 0
@@ -264,8 +280,10 @@ function echo(m) {
     const mix = clamp(p('mix'))
     left.write(l + feedback * (pingPong ? toneR : toneL))
     if (right) right.write((pingPong && !has('audio_in_R') ? 0 : r) + feedback * (pingPong ? toneL : toneR))
-    put('audio_out_L', blend(l, toneL, mix))
-    if (right) put('audio_out_R', blend(r, toneR, mix))
+    put('audio_out_L', blend(l, wetPathL ? wetPathL.read(64) : toneL, mix))
+    if (right) put('audio_out_R', blend(r, wetPathR ? wetPathR.read(64) : toneR, mix))
+    wetPathL?.write(toneL)
+    wetPathR?.write(toneR)
   }
 }
 

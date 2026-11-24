@@ -16,7 +16,7 @@ This is an unofficial, browser-based patch editor for the ZOIA pedal. It is not 
 ## Works offline
 - Runs as one HTML file. Double-click to start.
 - Playback needs AudioWorklet.
-- The patch library needs DecompressionStream. Works on any current Chrome, Edge, Firefox or Safari.
+- The patch library needs DecompressionStream. Tested in Chrome/Chromium. Edge is likely to work. Firefox and Safari are untested.
 
 ## Features
 - Opens and saves ZOIA `.bin` patches with a byte-exact round trip.
@@ -43,7 +43,7 @@ Dev server:
 ```
 Then open http://localhost:8280/editor/.
 
-## Tests (Node 22.8+, no packages)
+## Tests (run with Node 26, no packages)
 ```bash
 node --test --test-isolation=none editor/tests/*.test.js
 node --test --test-isolation=none --test-skip-pattern='every module-supported corpus patch' sim/tests/*.mjs
@@ -72,7 +72,7 @@ The embedded library contains only patches whose authors published them on Patch
 - If you are an author and want your patch removed, open an issue.
 
 ## Status
-This is a hobby project. The simulator is an approximation of the pedal, not a copy of its sound. Bug reports welcome via issues.
+This is a hobby project. The simulator is an approximation of the pedal. See [CALIBRATION.md](CALIBRATION.md) for measurements against the pedal. Bug reports welcome via issues.
 
 ## Licence and credits
 Code is under GPL-3.0 (see `LICENSE`).
