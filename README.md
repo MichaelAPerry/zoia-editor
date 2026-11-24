@@ -2,6 +2,8 @@
 
 This is an unofficial, browser-based patch editor for the ZOIA pedal. It is not affiliated with, endorsed by or supported by the manufacturer.
 
+**Try it in your browser:** https://michaelaperry.github.io/zoia-editor/
+
 **Download:** get `editor/dist/zoia-editor.html` and open it. Nothing to install.
 
 ![The editor with a patch loaded](screenshots/02-corpus-patch-dark-1440.png)
