@@ -1,0 +1,7 @@
+__pycache__/
+node_modules/
+editor/screenshots/dl/
+out/*.wav
+
+*.pyc
+*.local_edit.bak

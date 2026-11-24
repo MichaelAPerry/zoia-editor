@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patch Editor for the ZOIA</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+<div id="app">
+  <header class="site-head">
+    <h1>Patch Editor <small>for the ZOIA</small></h1>
+    <label>Appearance <select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+  </header>
+  <div class="toolbar" aria-label="Patch tools">
+    <label>Patch <input id="patch-name" type="text" maxlength="16" size="16" spellcheck="false"></label>
+    <button id="new">New</button>
+    <button id="open-bin">Open .bin</button>
+    <button id="browse">Browse corpus</button>
+    <div class="cluster">
+      <label>Slot <input id="slot" type="number" min="0" max="999" value="0" required></label>
+      <button id="save-bin">Save .bin</button>
+    </div>
+    <div class="cluster"><button id="open-text">Open text</button><button id="save-text">Save text</button></div>
+    <div class="cluster"><button id="undo" title="Ctrl+Z">Undo</button><button id="redo" title="Ctrl+Y">Redo</button></div>
+    <button id="print">Print</button>
+  </div>
+  <div class="toolbar" aria-label="Simulator tools">
+    <button id="play" class="primary">Play</button>
+    <button id="stop" disabled>Stop</button>
+    <label>Input <select id="source">
+      <option value="pluck">Pluck sequence</option><option value="drums">Drum loop</option>
+      <option value="click">Click every 2 s</option><option value="noise">White noise burst</option>
+      <option value="file">Audio file</option><option value="live">Live input · mono</option>
+    </select></label>
+    <button id="open-audio">Open audio</button>
+    <span id="audio-file"></span>
+    <label class="volume">Output volume <input id="volume" type="range" min="0" max="1" value=".65" step=".01"></label>
+    <button id="record" disabled>Record 10 s to WAV</button>
+  </div>
+  <input id="bin-file" type="file" accept=".bin" hidden>
+  <input id="text-file" type="file" accept=".txt,.yaml,.yml,text/plain" hidden>
+  <input id="sound-file" type="file" accept="audio/*,.flac,.ogg,.wav,.mp3,.m4a,.aiff" hidden>
+  <div id="status" role="status"></div>
+  <main class="workspace">
+    <aside class="panel palette">
+      <h2>Modules</h2>
+      <input id="module-search" type="search" placeholder="Find a module…" aria-label="Find a module">
+      <div id="palette"></div>
+    </aside>
+    <section class="pedal-wrap" aria-label="ZOIA pedal">
+      <div class="pedal">
+        <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+        <div class="pedal-top">
+          <div class="oled-bezel"><div id="oled" class="oled" role="status" aria-label="Display"></div></div>
+          <div class="keys" id="keys" aria-label="Utility keys"></div>
+          <div class="knob-area">
+            <div id="knob" class="knob" tabindex="0" role="slider" aria-label="Knob" aria-valuemin="0" aria-valuemax="65535" aria-valuenow="0" title="Turn: scroll, drag up or down, or arrow keys. Hold Shift for fine."><i class="knob-mark"></i></div>
+            <span class="plate">KNOB</span>
+          </div>
+        </div>
+        <div class="editor" aria-label="Patch grid">
+          <div class="page-head">
+            <nav id="pages" aria-label="Pages"></nav>
+            <div class="cluster"><button id="add-page" title="Add page">+ Page</button><button id="rename-page">Rename</button><button id="delete-page" title="Delete page">Delete</button></div>
+          </div>
+          <div class="grid-scroll">
+            <div id="grid-wrap">
+              <div id="grid" class="grid"></div>
+              <svg id="wires" viewBox="0 0 800 500" aria-label="Cables"></svg>
+            </div>
+          </div>
+          <div id="stubs" aria-label="Off-page cables"></div>
+          <div id="hardware-pads" class="jack-list"></div>
+          <div class="port-legend"><span class="port-out">◆ Output</span><span class="port-in">● Input</span></div>
+          <p id="grid-help" class="hint"></p>
+        </div>
+        <div class="pedal-bottom">
+          <div class="leds" id="leds" aria-label="Engaged indicator"><i></i><i></i><i></i><i></i></div>
+          <div class="stomp-row">
+            <div id="stomps" class="cluster" aria-label="Stompswitches"></div>
+          </div>
+          <div id="buttons" class="cluster" aria-label="Pushbutton modules"></div>
+        </div>
+      </div>
+    </section>
+    <aside class="panel inspector"><h2>Inspector</h2><div id="inspector"></div></aside>
+  </main>
+  <footer class="panel console">
+    <section><h2>Simulator output</h2>
+      <div class="meter"><span>L level</span><meter id="left" aria-label="Left level" min="0" max="1" high=".85" value="0"></meter><output id="left-db">−∞ dB</output></div>
+      <div class="meter"><span>R level</span><meter id="right" aria-label="Right level" min="0" max="1" high=".85" value="0"></meter><output id="right-db">−∞ dB</output></div>
+      <div id="cpu" title="Share of the available audio processing time used by the simulator.">DSP load —</div>
+    </section>
+    <section><h2>Validation</h2><ul id="validation"></ul></section>
+  </footer>
+  <p class="legal">An unofficial editor for the ZOIA pedal. Not affiliated with or endorsed by its manufacturer.</p>
+</div>
+<dialog id="corpus">
+  <div class="dialog-head"><h2>Patch corpus</h2><form method="dialog"><button>Close</button></form></div>
+  <input id="corpus-search" type="search" aria-label="Search corpus" placeholder="Search titles, authors, categories, tags…">
+  <p id="corpus-status" role="status"></p>
+  <div class="corpus-scroll"><table><thead id="corpus-head"></thead><tbody id="corpus-rows"></tbody></table></div>
+</dialog>
+<div id="print-sheet"></div>
+<script type="module" src="ui/app.js"></script>
+</body>
+</html>
