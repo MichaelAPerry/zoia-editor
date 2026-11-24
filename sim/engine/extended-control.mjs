@@ -12,6 +12,24 @@ const scales = [
 ]
 
 export const extendedControls = {
+  105({ p, put, has, options }) {
+    const { operation, num_of_inputs: count } = options
+    const inputs = Array.from({ length: operation === 'NOT' ? 1 : count }, (_, i) => `in_${i + 1}`)
+    // ASSUMPTION: A high input strictly exceeds the threshold (0.5 by default).
+    // Multi-input XOR and XNOR use odd and even parity, respectively.
+    const evaluate = {
+      AND: n => n === count, OR: n => n > 0, NOR: n => n === 0,
+      NAND: n => n !== count, XOR: n => n % 2 === 1, XNOR: n => n % 2 === 0,
+      NOT: n => n === 0,
+    }[operation]
+    const adjustable = has('threshold')
+    return () => {
+      const threshold = adjustable ? clamp(p('threshold')) : 0.5
+      let high = 0
+      for (const input of inputs) high += Number(p(input) > threshold)
+      put('cv_out', Number(evaluate(high)))
+    }
+  },
   18({ p, unit, put }) {
     let last = 0, rising = false, frame = 0, lastRise = -1, next = 0
     let period = sampleRate / 2, held = 0

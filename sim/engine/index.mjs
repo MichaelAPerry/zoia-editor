@@ -24,7 +24,7 @@ export function connectionGain(raw, audioConnection) {
   return audioConnection ? dbGain((raw - 10000) / 100) : raw / 10000
 }
 
-function createModule(record, index, blockSize, seed, bpm) {
+function createModule(record, index, blockSize, seed, bpm, sample) {
   const id = record.type_id
   const { name, options, active, parameters, knobNames } = layout(record)
   const ports = Object.fromEntries(active.map(([key, position, type, isKnob]) => [key, {
@@ -56,7 +56,7 @@ function createModule(record, index, blockSize, seed, bpm) {
     if (port) port.value = clean(value)
   }
   const context = {
-    id, options, p, put, unit, knob, bpm,
+    id, options, p, put, unit, knob, bpm, sample,
     has: key => Object.hasOwn(ports, key),
     connected: key => Boolean(ports[key]?.sources.length),
     hasSaved: bytes.length > 0,
@@ -99,13 +99,13 @@ function createModule(record, index, blockSize, seed, bpm) {
   }
 }
 
-export function createEngine(patch, { blockSize = defaultBlockSize, seed = 1, bpm = 0, acCoupledOutput = false } = {}) {
+export function createEngine(patch, { blockSize = defaultBlockSize, seed = 1, bpm = 0, acCoupledOutput = false, samples = {} } = {}) {
   if (patch.decode_error) throw Error(`Patch could not be decoded: ${patch.decode_error}`)
   if (patch.empty) patch = { ...patch, modules: [], connections: [] }
   if (!Array.isArray(patch.modules) || !Array.isArray(patch.connections)) throw Error('Expected decoded patch JSON')
   if (!Number.isInteger(blockSize) || blockSize < 1 || blockSize > 4096) throw Error('Invalid block size')
   if (!Number.isFinite(bpm) || bpm < 0 || bpm > 2400) throw Error('BPM must be between 0 and 2400')
-  const modules = patch.modules.map((record, i) => createModule(record, i, blockSize, seed, bpm))
+  const modules = patch.modules.map((record, i) => createModule(record, i, blockSize, seed, bpm, record.type_id === 102 ? samples[i] : undefined))
   const unsupported = unsupportedModules(patch)
   const issues = []
   for (const connection of patch.connections) {
@@ -151,6 +151,13 @@ export function createEngine(patch, { blockSize = defaultBlockSize, seed = 1, bp
   let slot = 0
   return {
     unsupported, issues, blockSize,
+    sendMidiCC(channel, controller, value) {
+      if (!Number.isInteger(channel) || channel < 1 || channel > 16 ||
+          ![controller, value].every(n => Number.isInteger(n) && n >= 0 && n <= 127))
+        throw Error('Expected a MIDI channel (1–16), controller and value (0–127)')
+      io.midiCC ??= new Map()
+      io.midiCC.set((channel - 1) * 128 + controller, value)
+    },
     set(module, key, value) {
       if (!Number.isFinite(value) || value < -1 || value > 1) throw Error('Control value must be between -1 and 1')
       const matches = /^\d+$/.test(String(module)) ? [modules[Number(module)]].filter(Boolean)

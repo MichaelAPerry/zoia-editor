@@ -4,13 +4,14 @@ import { createEngine, sampleRate } from './engine/index.mjs'
 import { fillTestSignal } from './signal.mjs'
 import { decodeWav, floatWavHeader } from './wav.mjs'
 
-const usage = 'node sim/render.mjs patch.json [--in input.wav] --out out.wav [--seconds N] [--bpm N] [--set "module:param=value"]'
+const usage = 'node sim/render.mjs patch.json [--in input.wav] --out out.wav [--seconds N] [--bpm N] [--cc seconds:channel:controller:value] [--set "module:param=value"]'
 
 function render() {
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
       in: { type: 'string' }, out: { type: 'string' }, seconds: { type: 'string' }, bpm: { type: 'string' },
+      cc: { type: 'string', multiple: true },
       set: { type: 'string', multiple: true }, help: { type: 'boolean' },
     },
   })
@@ -30,6 +31,16 @@ function render() {
   const seconds = values.seconds === undefined ? (input ? input.left.length / sampleRate : 4) : Number(values.seconds)
   const frames = Math.round(seconds * sampleRate)
   if (!Number.isSafeInteger(frames) || frames <= 0) throw Error('Specify a positive render duration')
+  const events = (values.cc ?? []).map(spec => {
+    const match = /^(\d+(?:\.\d+)?):(\d+):(\d+):(\d+)$/.exec(spec)
+    if (!match) throw Error(`Invalid MIDI CC event "${spec}"`)
+    const [time, channel, controller, value] = match.slice(1).map(Number)
+    const frame = Math.round(time * sampleRate)
+    if (frame >= frames || channel < 1 || channel > 16 || controller > 127 || value > 127)
+      throw Error(`MIDI CC event out of range "${spec}"`)
+    return { frame, channel, controller, value }
+  }).sort((a, b) => a.frame - b.frame)
+  let nextEvent = 0
   const header = floatWavHeader(frames)
   if (existsSync(values.out) && [positionals[0], values.in].some(path =>
     path && realpathSync(path) === realpathSync(values.out))) throw Error('Output must be separate from input files')
@@ -47,8 +58,12 @@ function render() {
   }
   try {
     write(header)
-    for (let offset = 0; offset < frames; offset += block) {
-      const n = Math.min(block, frames - offset)
+    for (let offset = 0; offset < frames;) {
+      while (events[nextEvent]?.frame === offset) {
+        const { channel, controller, value } = events[nextEvent++]
+        engine.sendMidiCC(channel, controller, value)
+      }
+      const n = Math.min(block, (events[nextEvent]?.frame ?? frames) - offset)
       if (input) {
         l.fill(0)
         r.fill(0)
@@ -67,6 +82,7 @@ function render() {
         }
       }
       write(encoded.subarray(0, n * 8))
+      offset += n
     }
   } finally {
     closeSync(fd)

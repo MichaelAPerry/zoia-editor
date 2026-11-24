@@ -8,9 +8,18 @@ const cvInput = ({ id, put, knob }) => () => put(id === 54 ? 'cv_output' : 'cv_o
 export const interfaces = {
   16: idle,
   20: idle,
-  21: idle,
+  21({ options, put }) {
+    const index = (options.midi_channel - 1) * 128 + options.controller
+    const bipolar = options.output_range === '-1 to 1'
+    return io => {
+      const value = io.midiCC?.get(index)
+      put('cc_out', value === undefined ? 0 : bipolar ? value / 127 * 2 - 1 : value / 127)
+    }
+  },
   35: idle,
   54: cvInput,
+  55: idle,
+  62: idle,
   82({ bpm, put, options }) {
     if (!bpm) return idle()
     const [numerator, denominator = 1] = options.beat_modifier.split('/').map(Number)
@@ -26,6 +35,7 @@ export const interfaces = {
       frame++
     }
   },
+  84: idle,
   86: idle,
   87: idle,
   88: cvInput,

@@ -1,7 +1,8 @@
 import { stereoEffect } from './audio.mjs'
-import { blend, coefficient, delayLine, edge, eq, sampleRate, stateVariable, tap, tau, wave } from './dsp.mjs'
-import { clamp } from './layout.mjs'
+import { allpass, blend, clean, coefficient, delayLine, edge, eq, sampleRate, stateVariable, tap, tau, wave } from './dsp.mjs'
+import { clamp, dbGain } from './layout.mjs'
 import { loopBuffer } from './loop.mjs'
+import { sampler } from './sampler.mjs'
 
 const cabinetProfiles = {
   '4x12_full': [75, 4800, 2], '2x12_dark': [90, 3200, -2], '2x12_modern': [95, 5400, 2],
@@ -12,6 +13,77 @@ const cabinetProfiles = {
 const pcm = value => Math.round(clamp(value, -1, 1) * 32767)
 
 export const extendedAudio = {
+  102: sampler,
+  106(m) {
+    const { p, unit, has } = m
+    const minimum = 3000, maximum = 60000
+    const clocked = has('tap_tempo_in'), tempo = tap(sampleRate / 2)
+    // ASSUMPTION: The tap-ratio CV selects the same divisions as Ping Pong Delay.
+    const ratios = [1, 2 / 3, 1 / 2, 1 / 3, 3 / 8, 1 / 4, 3 / 16, 1 / 8, 1 / 16, 1 / 32]
+    let length = minimum, speed = 1, feedback = 0, mix = 0
+    return stereoEffect(m, () => {
+      // ASSUMPTION: Alternate fixed capture windows and resample the previous
+      // window in reverse, wrapping pitch-shifted reads inside that window.
+      let capture = new Float32Array(maximum), previous = new Float32Array(maximum)
+      let head = 0, captureLength = 0, previousLength = 0, read = 0
+      return x => {
+        if (head === 0) captureLength = length
+        let wet = 0
+        if (previousLength) {
+          const index = Math.floor(read)
+          wet = blend(previous[index], previous[(index + 1) % previousLength], read - index)
+          read = ((read - speed) % previousLength + previousLength) % previousLength
+        }
+        capture[head++] = clean(x + wet * feedback)
+        if (head === captureLength) {
+          const completed = capture
+          capture = previous
+          previous = completed
+          previousLength = captureLength
+          read = previousLength - 1
+          head = 0
+        }
+        return blend(x, wet, mix)
+      }
+    }, () => {
+      length = Math.round(clamp(clocked
+        ? tempo(p('tap_tempo_in')) * ratios[Math.round(clamp(p('tap_ratio')) * (ratios.length - 1))]
+        : unit('delay_time') * sampleRate / 1000, minimum, maximum))
+      speed = 2 ** (unit('pitch') / 12)
+      feedback = Math.min(0.99, dbGain(unit('feedback')))
+      mix = clamp(p('mix'))
+    })
+  },
+  107(m) {
+    const { p, unit, has } = m
+    const clocked = has('tap_tempo_in'), direct = has('direct')
+    const tempo = tap(sampleRate / 2)
+    let phase = 0, depth = 0, resonance = 0, mix = 0
+    return stereoEffect(m, channel => {
+      // ASSUMPTION: Model the topology with a short vibrato delay and four
+      // unequal allpass stages, with a quarter-cycle stereo offset.
+      const line = delayLine(256)
+      const stages = [180, 380, 760, 1500].map(hz => ({ hz, filter: allpass() }))
+      let previous = 0
+      return x => {
+        const sweep = direct ? clamp(p('direct')) : 0.5 + 0.5 * Math.sin(tau * (phase + channel / 4))
+        const vibrato = line.read(24 + 192 * depth * sweep)
+        line.write(x)
+        let wet = vibrato + previous * resonance
+        for (const { hz, filter } of stages) {
+          const t = Math.tan(Math.PI * hz * (0.5 + 3 * depth * sweep) / sampleRate)
+          wet = filter(wet, (1 - t) / (1 + t))
+        }
+        previous = wet
+        return blend(x, wet, depth * mix)
+      }
+    }, () => {
+      if (!direct) phase = (phase + (clocked ? 1 / tempo(p('tap_tempo_in')) : unit('rate') / sampleRate)) % 1
+      depth = clamp(p('depth'))
+      resonance = 0.8 * clamp(p('resonance'))
+      mix = clamp(p('mix'))
+    })
+  },
   8: ({ p, put }) => () => put('audio_out', clamp(p('audio_in_1') * p('audio_in_2'), -1, 1)),
   30({ p, put, unit, has, options }) {
     const buffer = loopBuffer(parseInt(options.max_rec_time, 10) * sampleRate)
