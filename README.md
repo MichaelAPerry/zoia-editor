@@ -43,7 +43,7 @@ Dev server:
 ```
 Then open http://localhost:8280/editor/.
 
-## Tests (Node 22+, no packages)
+## Tests (Node 22.8+, no packages)
 ```bash
 node --test --test-isolation=none editor/tests/*.test.js
 node --test --test-isolation=none --test-skip-pattern='every module-supported corpus patch' sim/tests/*.mjs
