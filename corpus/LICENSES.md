@@ -165,70 +165,70 @@ Regenerate this table with `python3 -B tools/corpus_credits.py`.
 | Loophole | WZ | Do What The F*ck You Want To Public License | <https://patchstorage.com/loophole/> |
 | The Canyon and the Canyon M -- a drone synth for dense, distorted atmospheres | Christopher H. M. Jacques | Creative Commons Attribution Share Alike 4.0 | <https://patchstorage.com/the-canyon-a-drone-synth-for-dense-distorted-atmospheres/> |
 | The Canyon and the Canyon M -- a drone synth for dense, distorted atmospheres | Christopher H. M. Jacques | Creative Commons Attribution Share Alike 4.0 | <https://patchstorage.com/the-canyon-a-drone-synth-for-dense-distorted-atmospheres/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
-| ZOIA Euroburo Factory Patches | PatchStorage account 8405 | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
+| ZOIA Euroburo Factory Patches | Empress Effects | Do What The F*ck You Want To Public License | <https://patchstorage.com/zoia-euroburo-factory-patches/> |
 | Velvet -- a silky-smooth guitar synth | Christopher H. M. Jacques | Creative Commons Attribution Share Alike 4.0 | <https://patchstorage.com/velvet-a-silky-smooth-guitar-synth/> |
 | Nephos -- a hazy, textural soundscape generator | Christopher H. M. Jacques | Creative Commons Attribution Share Alike 4.0 | <https://patchstorage.com/nephos-a-hazy-textural-soundscape-generator/> |
 | Orchestral v3.0 | Daniel_Bertola | Do What The F*ck You Want To Public License | <https://patchstorage.com/orchestral/> |

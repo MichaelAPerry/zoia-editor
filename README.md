@@ -1,62 +1,81 @@
 # Patch Editor for the ZOIA
 
-A browser-based patch editor for the ZOIA pedal. It is drawn like the pedal: a black enclosure, the 8 x 5 grid of buttons lit in module colours, an OLED-style display, the knob and the three stompswitches. It runs as one HTML file, fully offline.
+This is an unofficial, browser-based patch editor for the ZOIA pedal. It is not affiliated with, endorsed by or supported by the manufacturer.
 
-Unofficial. This project is not affiliated with, endorsed by or supported by the pedal's manufacturer.
+**Download:** get `editor/dist/zoia-editor.html` and open it. Nothing to install.
 
-## What it does
+![The editor with a patch loaded](screenshots/02-corpus-patch-dark-1440.png)
 
-- Opens and saves ZOIA `.bin` patches (byte-exact round trip for all 414 corpus patches) and a plain-text patch format.
-- Places modules on the grid, cables them, edits options, colours, names and pages.
-- Lets you turn the knob (scroll, drag up/down, or arrow keys; hold Shift for fine) on the selected knob button. The display shows the module, parameter and value as on the pedal's parameter screen.
-- Plays the patch through a built-in simulator (AudioWorklet), with a pluck, drum, click, noise, file or live input, and records 10 s to WAV.
-- Browses an embedded library of patches, autosaves to the browser, prints patch sheets.
-- The page follows your light/dark setting. The pedal stays black.
+## Look and feel
+- Drawn like the pedal: black enclosure, 8 x 5 grid of buttons lit in module colours.
+- OLED-style display, a knob, utility keys and three footswitches (SELECT, SCROLL, BYPASS).
+- Follows your light/dark setting while the pedal stays black.
 
-## Open it offline
+## Works offline
+- Runs as one HTML file. Double-click to start.
+- Playback needs AudioWorklet.
+- The patch library needs DecompressionStream. Works on any current Chrome, Edge, Firefox or Safari.
 
-Double-click `editor/dist/zoia-editor.html`. No server, network or fonts needed. Playback needs a browser with AudioWorklet; the library needs DecompressionStream (any current Chrome, Edge, Firefox or Safari).
+## Features
+- Opens and saves ZOIA `.bin` patches with a byte-exact round trip.
+- Plain-text patch format supported.
+- Place modules on the grid and cable them.
+- Edit options, colours, names and pages.
+- Turn the knob with the scroll wheel, a drag or the arrow keys. Hold Shift for fine adjustments.
+- The display shows module, parameter and value.
+- Plays the patch through a built-in simulator.
+- Input sources: pluck, drum, click, noise, file or live input.
+- Records 10 s to WAV.
+- Browses an embedded patch library.
+- Autosaves in the browser.
+- Prints patch sheets.
 
-## Rebuild the single file
-
-```sh
+## Rebuild for development
+Requires Python 3 only.
+```bash
 python3 editor/build_single.py
 ```
+Dev server:
+```bash
+./editor/serve.sh
+```
+Then open http://localhost:8280/editor/.
 
-Requires Python 3 only. The output is `editor/dist/zoia-editor.html`.
-
-For development you can also serve the source: `./editor/serve.sh`, then open http://localhost:8280/editor/.
-
-## Tests
-
-Node 22 or newer, no packages.
-
-```sh
+## Tests (Node 22+, no packages)
+```bash
 node --test --test-isolation=none editor/tests/*.test.js
 node --test --test-isolation=none --test-skip-pattern='every module-supported corpus patch' sim/tests/*.mjs
 python3 -B -m unittest discover -s tests
 ```
-
-`tools/cdp-clickthrough.mjs` drives the built file in headless Chromium through the main flows and writes screenshots (set `CHROME` to a Chromium binary; it always launches with `--mute-audio`):
-
-```sh
+Click-through in headless Chromium:
+```bash
 node tools/cdp-clickthrough.mjs "$PWD/editor/dist/zoia-editor.html" "$PWD/screenshots" /tmp/zoia-downloads
 ```
+Set the `CHROME` environment variable to a Chromium binary. It always launches muted.
 
 ## Layout
+- `editor/`: editor core, UI, style, build scripts and tests.
+- `zoiacodec/`: Python reference codec for `.bin` files.
+- `sim/`: JavaScript DSP simulator for playback.
+- `corpus/`: community patches for the library and tests.
+- `out/`: the author's own bench patches.
+- `tools/`: click-through and corpus scripts.
+- `screenshots/`: output of the click-through.
+- `RECON.md`: binary format notes.
 
-| Path | What |
-| --- | --- |
-| `editor/` | The editor: `core/` (codec, model, module data), `ui/`, `style.css`, `index.html`, build scripts, tests |
-| `zoiacodec/` | Python reference codec for `.bin` patches (used by tests for encoder parity) |
-| `sim/` | The JavaScript DSP simulator used for playback |
-| `corpus/` | Community patches used for testing and the library (see licensing note) |
-| `out/` | Local bench patches shown in the library |
-| `screenshots/` | Output of the click-through |
-| `RECON.md` | Notes on the binary format |
+## Patch library
+The embedded library contains only patches whose authors published them on PatchStorage under an open licence (Creative Commons, WTFPL, GPL, Unlicense), plus one empty patch.
+- Each patch keeps its author's own licence, not GPL.
+- Titles, authors, licences and links are in [corpus/LICENSES.md](corpus/LICENSES.md).
+- If you are an author and want your patch removed, open an issue.
+
+## Status
+This is a hobby project. The simulator is an approximation of the pedal, not a copy of its sound. Bug reports welcome via issues.
 
 ## Licence and credits
-
-GPL-3.0, see `LICENSE`. The patch format and module data come from [zoia_lib](https://github.com/meanmedianmoge/zoia_lib) (GPL-3.0) by meanmedianmoge, with the format decoded by djigneo/apparent1 and the encoder work by Sranderley. See `HISTORY.md`.
-
-The patches in `corpus/` were downloaded from PatchStorage and belong to their authors (see `corpus/patchstorage-meta.json`). Check their licences before publishing this repository or redistributing the single file, which embeds them.
+Code is under GPL-3.0 (see `LICENSE`).
+- Patch format and module data from [zoia_lib](https://github.com/meanmedianmoge/zoia_lib) by meanmedianmoge (GPL-3.0).
+- Format decoded by djigneo/apparent1.
+- Encoder work by Sranderley.
+- See `HISTORY.md` for more details.
+- Written by AI coding agents (Codex, Claude) under review, for Michael Perry.
