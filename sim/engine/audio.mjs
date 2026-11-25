@@ -61,7 +61,7 @@ export const audio = {
       } else if (options['CV Input'] === 'linear') {
         samples = position * max
       } else if (benchOption) {
-        // See CALIBRATION.md for hardware measurements.
+        // Pedal measurements in CALIBRATION.md
         // Slots 012–014 give 72, 133 and 640 samples at quarter-scale steps.
         const lo = 16384 / 65535, hi = 49152 / 65535
         if (position < lo) {
@@ -229,13 +229,17 @@ function filter({ id, p, unit, put, options }) {
 
 function drive({ id, p, unit, put, options }) {
   const flavor = options.model
-  const color = { plexi: 0.45, germ: 0.75, classic: 0.6, pushed: 0.3, edgy: 0.12,
+  const color = { plexi: 0.45, germ: 0.75, classic: 0.6, pushed: 0.3, edgy: 0.70,
     efuzzy: 0.3, burly: 0.65, scoopy: 0.28, ugly: 0.1 }[flavor]
   const removeDC = dcBlock(15)
   let low = 0
   return () => {
     const x = p('audio_in') * (1 + unit('input_gain'))
-    let y = id === 66 ? clamp(2 * x, -0.83, 1) : Math.tanh(x + (flavor === 'germ' ? 0.15 * x * x / (1 + x * x) : 0))
+    let y
+    // Fuzz: no extra 2x drive (factory drones 034 046 048 053 057 all 3-6 dB closer; FACTORY-FIXES Continuation 3 B).
+    if (id === 66) y = clamp(x, -0.83, 1)
+    else if (flavor === 'edgy') y = clamp(x, -0.22, 0.22)
+    else y = Math.tanh(x + (flavor === 'germ' ? 0.15 * x * x / (1 + x * x) : 0))
     low = clean(blend(low, y, color))
     y = flavor === 'scoopy' ? y - 0.65 * low : low
     put('audio_out', removeDC(y) * dbGain(unit('output_gain')))
@@ -261,7 +265,7 @@ function echo(m) {
   const pingPong = id === 75
   const left = delayLine(2.1 * sampleRate)
   const right = has('audio_out_R') ? delayLine(2.1 * sampleRate) : undefined
-  // See CALIBRATION.md for hardware measurements.
+  // Pedal measurements in CALIBRATION.md
   // Delay w/Mod adds one 64-sample block to the wet path outside the feedback loop.
   const wetPathL = id === 43 ? delayLine(64) : undefined
   const wetPathR = id === 43 && right ? delayLine(64) : undefined
@@ -288,8 +292,11 @@ function echo(m) {
 }
 
 function modulation(m) {
-  const { id, p, unit, has, options, f32 } = m
-  const period = tap(f32(4, 0.5) * sampleRate)
+  const { id, p, unit, has, options, u32, f32 } = m
+  // The Flanger stores its tap period in samples at offset 0. See CALIBRATION.md.
+  const flangerPeriod = id === 69 && has('tap_tempo_in') ? u32(0) : 0
+  const period = tap(flangerPeriod >= 1200 && flangerPeriod <= 30 * sampleRate
+    ? flangerPeriod : f32(4, 0.5) * sampleRate)
   let phase = 0
   return stereoEffect(m, channel => {
     const line = [69, 70, 71].includes(id) ? delayLine(1800) : undefined
@@ -323,19 +330,23 @@ function modulation(m) {
   })
 }
 
-// bench 2026-11-23 zoia_ir 002–009: effective low-octave decay anchors for
-// this comb model. Retain the existing limits and interpolate between anchors.
+const ghostDecay25 = 3.35, ghostDecay75 = 48
+
+// Effective low-octave decay anchors for this comb model. See CALIBRATION.md.
 const reverbDecay = {
   25: [0.5, 's', [0, 3.15, 4.12, 10.6, null]],
+  // Isolated pedal bursts anchor the 250 Hz tail at 25% and 75%.
+  // The other positions estimate a bounded rise in feedback.
+  67: [0.5, 's', [0.5, ghostDecay25, 12, ghostDecay75, 52]],
   74: [0.5, 's', [0, 2.8, 4.12, 9.5, null]],
   79: [0.5, 's', [0, 2.5, 4.12, 6.8, null]],
   80: [0.16, 's', [0, 1.75, 4.12, 5.8, null]],
 }
 
-// bench 2026-11-23 zoia_ir 002–011: wet peak corrections at raw 16384/49152.
+// Wet peak corrections at raw 16384 and 49152. See CALIBRATION.md.
 const reverbWetDb = {
   25: [15.5, 14],
-  67: [3, 8.5],
+  67: [6.85, 9.46],
   74: [21, 16],
   79: [16, 16],
   80: [16, 13],
@@ -348,15 +359,23 @@ function reverb(m) {
   const [lowWetDb, highWetDb] = reverbWetDb[id]
   let feed = 0, phase = 0, previousPosition, decay, wetGain
   return stereoEffect(m, channel => {
-    const wet = reverbChannel(size * sampleRate / 44100, channel * 27)
+    // The isolated Ghostverb burst loses bass much faster than the 250 Hz octave.
+    const wet = reverbChannel(size * sampleRate / 44100, channel * 27, id === 67 ? 2.5 : 0)
     const low = eq('low_shelf'), high = eq('hi_shelf')
     return x => {
       const position = clamp(p(decayKey))
       if (position !== previousPosition) {
         previousPosition = position
-        // bench 2026-11-23 zoia_ir 010–011: insufficient repeatable decay fits.
-        decay = clamp(id === 67 ? 0.5 + 17.5 * position ** 2 : scaled(position, reverbDecay[id]), 0.15, 30)
-        wetGain = dbGain(blend(lowWetDb, highWetDb, clamp((position - 0.25) * 2)))
+        decay = scaled(position, reverbDecay[id])
+        if (id !== 67) decay = clamp(decay, 0.15, 30)
+        let wetDb = blend(lowWetDb, highWetDb, clamp((position - 0.25) * 2))
+        if (id === 67) {
+          // Recover the isolated wet peaks after adding bass loss. Interpolate
+          // the correction in squared decay progress between the measured settings.
+          const progress = clamp((decay - ghostDecay25) / (ghostDecay75 - ghostDecay25))
+          wetDb += blend(1.58, 3.33, progress ** 2)
+        }
+        wetGain = dbGain(wetDb)
       }
       const damping = has('lpf_freq') ? Math.exp(-tau * unit('lpf_freq') / sampleRate) : id === 25 ? 0.25 : 0.55
       const send = id === 67 ? feed * (0.8 + 0.2 * Math.sin(tau * phase + channel)) : feed

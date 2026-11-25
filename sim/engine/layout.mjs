@@ -159,18 +159,24 @@ export function scaled(value, definition) {
     // The VCA/feedback anchors correspond to linear amplitude.
     return range[1] === -12 ? 20 * Math.log10(x) : 20 * Math.log(x)
   }
-  let anchors = scalingCache.get(definition)
-  if (!anchors) {
-    anchors = range.map((v, i) => [i / 4, v ?? (unit === 's' ? 487.68 : 120)])
+  let scaling = scalingCache.get(definition)
+  if (!scaling) {
+    const anchors = range.map((v, i) => [i / 4, v ?? (unit === 's' ? 487.68 : 120)])
     if (unit === 'dB' && defaultValue === 0.83 && !range.includes(0)) anchors.splice(4, 0, [0.83, 0])
-    scalingCache.set(definition, anchors)
+    const interval = (range[4] - range[0]) / 4
+    const evenlySpaced = range.every((point, i) => point !== null &&
+      (i === 0 || Math.abs(point - range[i - 1] - interval) <= 0.05 * Math.abs(interval)))
+    const useGeometric = !evenlySpaced && (unit === 'Hz' || unit === 'ms' || unit === 's')
+    scaling = { anchors, useGeometric }
+    scalingCache.set(definition, scaling)
   }
+  const { anchors, useGeometric } = scaling
   for (let i = 1; i < anchors.length; i++) {
     const [end, high] = anchors[i]
     if (x <= end) {
       const [start, low] = anchors[i - 1]
       const t = (x - start) / (end - start)
-      return low > 0 && high / low > 2 && (unit === 'Hz' || unit === 'ms' || unit === 's')
+      return useGeometric && low > 0 && high / low > 2
         ? low * (high / low) ** t : low + (high - low) * t
     }
   }

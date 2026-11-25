@@ -86,6 +86,17 @@ test('Delay w/Mod adds 64 samples once on the wet path', () => {
   near(second.gain / first.gain, 0.5, 0.001)
 })
 
+test('Flanger starts at its saved tap period and falls back to 120 BPM without one', () => {
+  for (const [saved_data_hex, period] of [['0036000000000000', 13824], [undefined, 24000]]) {
+    const engine = insert({ ...module(69, [0, 1], [0, 0, 65535, 32768, 65535]), saved_data_hex }, 0, 9)
+    const ramp = Float64Array.from({ length: period + 4000 }, (_, i) => i / sampleRate)
+    const [out] = render(engine, ramp)
+    const lag = index => (ramp[index] - out[index]) * sampleRate
+    near(lag(1000 + period), lag(1000), 0.001)
+    assert.ok(Math.abs(lag(1000 + Math.round(period / 2)) - lag(1000)) > 50)
+  }
+})
+
 test('Buffer Delay and graph feedback have exact integer sample offsets', () => {
   const [buf] = render(insert(module(26, [2]), 0, 1), impulse(200))
   assert.equal(buf.findIndex(Boolean), 128)
@@ -97,6 +108,20 @@ test('Buffer Delay and graph feedback have exact integer sample offsets', () => 
   near(out[17], connectionGain(9398, true))
   near(out[34], connectionGain(9398, true) ** 2)
   assert.equal(out[16], 0)
+})
+
+test('Edgy clips to its narrow rail with a fast smoothed attack', () => {
+  const engine = insert(module(11, [4], [0, 65535]), 0, 2)
+  const [out] = render(engine, Float64Array.of(1, 1))
+  const first = 0.22 * 0.70
+  near(out[0], first)
+  near(out[1], first * Math.exp(-2 * Math.PI * 15 / sampleRate) + 0.70 * (0.22 - first))
+})
+
+test('Fuzz drives its rail at the input gain without an extra 2x', () => {
+  const engine = insert(module(66, [0], [0, 65535]), 0, 3)
+  const [out] = render(engine, Float64Array.of(0.4))
+  near(out[0], 0.4 * 0.3)
 })
 
 test('SV lowpass is near -3 dB at cutoff and strongly attenuates a higher tone', () => {
@@ -132,6 +157,44 @@ test('LFO uses the measured slow anchors, taper, and upper calibration', () => {
     const [out] = render(engine, new Float64Array(1001))
     near(out[1000], Math.sin(2 * Math.PI * hz * 1000 / sampleRate))
   }
+})
+
+test('CV LFO follows the saved rate curve and interpolates in log Hz', () => {
+  const engine = createEngine(patch([module(5, [1, 0, 1]), module(2)], [wire(0, 3, 1, 0)]))
+  let phase = 0
+  for (const [position, hz] of [
+    [2360, 0.14308], [(2360 + 2428) / 2, Math.sqrt(0.14308 * 0.1475)],
+    [5520, 0.36723], [19948, 2.09673], [5520, 0.36723],
+  ]) {
+    engine.set(0, 'cv_control', position / 65535)
+    const [out] = render(engine, new Float64Array(1001))
+    near(out[1000], Math.sin(phase + 2 * Math.PI * hz * 1000 / sampleRate))
+    phase += 2 * Math.PI * hz * 1001 / sampleRate
+  }
+})
+
+test('Ghostverb 75% sheds the 125 Hz octave faster than the 250 Hz octave', () => {
+  const ghost = module(67, [0], [49152, 32768, 32768, 65535])
+  const [wet] = render(insert(ghost, 0, 6), impulse(4 * sampleRate))
+  const window = sampleRate / 5
+  const bandPower = (seconds, octCenter) => {
+    const start = Math.round(seconds * sampleRate)
+    let power = 0
+    for (let hz = 5 * Math.ceil(octCenter / (5 * Math.SQRT2)); hz < octCenter * Math.SQRT2; hz += 5) {
+      const step = 2 * Math.PI * hz / sampleRate
+      let real = 0, imaginary = 0
+      for (let i = 0; i < window; i++) {
+        const sample = wet[start + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / window))
+        real += sample * Math.cos(step * i)
+        imaginary += sample * Math.sin(step * i)
+      }
+      power += real * real + imaginary * imaginary
+    }
+    return power
+  }
+  const relativeTail = hz => bandPower(2.5, hz) / bandPower(0.5, hz)
+  assert.ok(relativeTail(125) < 0.004)
+  assert.ok(relativeTail(250) > 0.15)
 })
 
 test('wet Reverb Lite produces a decaying tail and flushes tiny inputs', () => {
@@ -218,6 +281,21 @@ test('parameter units honor anchors and unity', () => {
   near(scaled(0.5, vca), -6.020599913)
 })
 
+test('Delay w/Mod time follows the linear range in its saved sample counts', () => {
+  const { delay_time } = layout(module(43)).parameters
+  // This tap-mode measurement is 1.9 ms above the rate-mode curve.
+  near(scaled(3640 / 65535, delay_time), 172.0, 2)
+  const savedTimes = [
+    [8448, 312.2], [12280, 425.5],
+    [16248, 542.9], [23193, 748.2], [40888, 1271.3],
+  ]
+  for (const [position, milliseconds] of savedTimes) {
+    near(scaled(position / 65535, delay_time), milliseconds, 0.2)
+  }
+  const pingPong = layout(module(75)).parameters.delay_time
+  near(scaled(1368 / 65535, pingPong), 4941 / 48, 0.1)
+})
+
 test('every module-supported corpus patch renders bounded audio with low DC', t => {
   const paths = corpusFiles()
   const patches = decodeFiles(paths)
@@ -279,13 +357,26 @@ test('mono Audio Mixer with panning exposes both outputs and honors channel gain
 })
 
 test('audio out switch holds its stored channel and can be changed', () => {
-  const engine = createEngine(patch([module(1), module(34, [1], [32768]), module(2)], [
+  const engine = createEngine(patch([module(1), module(34, [1], [raw(0.25)]), module(2)], [
     wire(0, 0, 1, 0), wire(1, 2, 2, 0), wire(1, 3, 2, 1),
   ]))
   const l = impulse(1)
   assert.deepEqual(render(engine, l).map(x => x[0]), [1, 0])
+  engine.set(1, 'in_select', 0)
+  assert.deepEqual(render(engine, l).map(x => x[0]), [1, 0])
   engine.set(1, 'in_select', 1)
   assert.deepEqual(render(engine, l).map(x => x[0]), [0, 1])
+})
+
+test('multi-channel audio in switch selects channel 1 at zero CV', () => {
+  const engine = createEngine(patch([module(1), module(33, [1], [0]), module(2)], [
+    wire(0, 0, 1, 0), wire(0, 1, 1, 1), wire(1, 17, 2, 0),
+  ]))
+  assert.deepEqual(engine.issues, [])
+  const left = Float64Array.of(0.5), right = Float64Array.of(-0.75)
+  assert.equal(render(engine, left, right)[0][0], 0.5)
+  engine.set(1, 'in_select', 1)
+  assert.equal(render(engine, left, right)[0][0], -0.75)
 })
 
 test('Tremolo hardware blocks carry stereo audio instead of its depth knob', () => {

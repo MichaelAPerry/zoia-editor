@@ -172,11 +172,27 @@ export function dcBlock(hz) {
 }
 
 // Parallel damped combs and serial allpasses. Comb feedback is set by RT60.
-export function reverbChannel(size, offset) {
+export function reverbChannel(size, offset, lowFrequencyLoss = 0) {
   const lengths = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617]
     .map(n => Math.round(n * size + offset))
-  const combs = lengths.map(n => delayLine(n))
+  // Two boxcar averages make a triangular window with its first null near 240 Hz.
+  const width = 199
+  const combs = lengths.map(n => delayLine(n + Number(lowFrequencyLoss > 0)))
   const filtered = new Float64Array(combs.length)
+  // Scale additional bass loss by loop length so each comb loses the same dB per second.
+  const loss = lengths.map(n => 1 - 0.001 ** (lowFrequencyLoss * n / sampleRate))
+  const averages = lowFrequencyLoss ? lengths.map(() => {
+    const history = new Float64Array(width)
+    let head = 0
+    let first = 0, second = 0
+    return (entering, leaving) => {
+      first += (entering - leaving) / width
+      second += first - history[head]
+      history[head] = first
+      head = (head + 1) % width
+      return second / width
+    }
+  }) : []
   const diffuserLengths = [556, 441, 341, 225].map(n => Math.round(n * size + offset))
   const diffusers = diffuserLengths.map(n => delayAllpass(n))
   const feedback = new Float64Array(combs.length)
@@ -192,7 +208,14 @@ export function reverbChannel(size, offset) {
     for (let i = 0; i < combs.length; i++) {
       const y = combs[i].read(lengths[i], false)
       filtered[i] = clean(blend(y, filtered[i], damping))
-      combs[i].write(highpass + feedback[i] * filtered[i])
+      let tail = filtered[i]
+      if (lowFrequencyLoss) {
+        const center = lengths[i]
+        // Offset the window's group delay so it stays centered on the comb tap.
+        const low = averages[i](combs[i].read(center - width + 1, false), combs[i].read(center + 1, false))
+        tail -= low * loss[i]
+      }
+      combs[i].write(highpass + feedback[i] * tail)
       sum += y
     }
     sum *= 0.025

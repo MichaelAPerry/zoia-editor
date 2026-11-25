@@ -5,13 +5,167 @@ export function delayMaximum(option) {
   return option?.endsWith('ms') ? parseFloat(option) / 1000 : parseFloat(option || '1s')
 }
 
-// See CALIBRATION.md for hardware measurements.
+// Pedal measurements in CALIBRATION.md
 const lfoSlowPosition = 1050 / 65535
 const lfoSlowRate = 0.06131662
 const lfoBenchPosition = 2142 / 65535
 const lfoBenchRate = 0.12906869
 const lfoBenchExponent = 1.04396
 const lfoBenchSpan = (lfoBenchPosition / lfoSlowPosition) ** lfoBenchExponent - 1
+
+// Saved LFO rates (CALIBRATION.md), with duplicate positions consolidated and
+// isolated reversals omitted. Positions are in the pedal's 16-bit knob units.
+const lfoSavedRates = [
+  [2142, lfoBenchRate],
+  [2148, 0.12943],
+  [2212, 0.13354],
+  [2240, 0.13534],
+  [2268, 0.13714],
+  [2322, 0.14062],
+  [2348, 0.14231],
+  [2360, 0.14308],
+  [2428, 0.1475],
+  [2440, 0.14828],
+  [2588, 0.15795],
+  [2668, 0.16321],
+  [2677, 0.1638],
+  [2680, 0.164],
+  [2708, 0.16585],
+  [2748, 0.16849],
+  [2813, 0.1728],
+  [2868, 0.17646],
+  [2880, 0.17727],
+  [2908, 0.17913],
+  [2948, 0.18181],
+  [2988, 0.18449],
+  [3028, 0.18718],
+  [3352, 0.20918],
+  [3508, 0.22307],
+  [3608, 0.22685],
+  [3760, 0.23746],
+  [3788, 0.23942],
+  [3808, 0.24083],
+  [4028, 0.25639],
+  [4108, 0.2621],
+  [4148, 0.26497],
+  [4172, 0.26669],
+  [4188, 0.26784],
+  [4348, 0.27938],
+  [4680, 0.30368],
+  [4708, 0.30575],
+  [5068, 0.33266],
+  [5258, 0.34708],
+  [5520, 0.36723],
+  [5788, 0.38815],
+  [6268, 0.42643],
+  [6280, 0.42655],
+  [6308, 0.42967],
+  [6468, 0.44269],
+  [6588, 0.45253],
+  [6760, 0.46676],
+  [6788, 0.46908],
+  [6948, 0.48246],
+  [6988, 0.48583],
+  [7398, 0.52075],
+  [7668, 0.5442],
+  [8110, 0.58336],
+  [8360, 0.60595],
+  [8800, 0.64649],
+  [9148, 0.67928],
+  [9240, 0.68806],
+  [9388, 0.70228],
+  [9560, 0.71895],
+  [9828, 0.74525],
+  [10108, 0.77316],
+  [10228, 0.78526],
+  [10308, 0.79337],
+  [10388, 0.80152],
+  [11028, 0.86805],
+  [11548, 0.92392],
+  [11708, 0.94144],
+  [11774, 0.94871],
+  [12085, 0.98336],
+  [12210, 0.99746],
+  [12215, 0.99802],
+  [12588, 1.0407],
+  [12668, 1.04997],
+  [13093, 1.09994],
+  [13108, 1.1012],
+  [13280, 1.12549],
+  [13388, 1.13534],
+  [13440, 1.14164],
+  [13588, 1.15968],
+  [13920, 1.20069],
+  [14040, 1.21571],
+  [14108, 1.22426],
+  [14428, 1.26496],
+  [16170, 1.49994],
+  [16268, 1.51386],
+  [16308, 1.51957],
+  [16383.75, 1.53],
+  [16428, 1.53676],
+  [16560, 1.5558],
+  [16708, 1.57733],
+  [17000, 1.62032],
+  [17468, 1.69074],
+  [17788, 1.73998],
+  [17800, 1.74184],
+  [18188, 1.80279],
+  [18588, 1.86704],
+  [18628, 1.87355],
+  [18948, 1.92613],
+  [19341, 1.99202],
+  [19400, 2.00204],
+  [19423, 2.00596],
+  [19588, 2.0342],
+  [19908, 2.08972],
+  [19920, 2.09182],
+  [19948, 2.09673],
+  [20734, 2.23777],
+  [21226, 2.3293],
+  [22028, 2.48409],
+  [22188, 2.51583],
+  [22668, 2.61219],
+  [22892, 2.65891],
+  [22988, 2.67887],
+  [23867, 2.86675],
+  [24788, 3.07391],
+  [24828, 3.08315],
+  [25198, 3.16966],
+  [25348, 3.20525],
+  [26228, 3.42026],
+  [26268, 3.43029],
+  [26308, 3.44035],
+  [27828, 3.83975],
+  [27948, 3.87277],
+  [28348, 3.98448],
+  [28388, 3.99579],
+  [28468, 4.01849],
+  [28840, 4.12539],
+  [29068, 4.19204],
+  [29628, 4.35944],
+  [30408, 4.60163],
+  [30708, 4.69767],
+  [31080, 4.81904],
+  [31628, 5.00257],
+  [31634, 5.00462],
+  [32308, 5.23838],
+  [32455, 5.29056],
+  [32767.5, 5.4],
+].map(([position, hz]) => [position, Math.log(hz)])
+
+function interpolateLfoRate(position) {
+  const raw = position * 65535
+  let start = 0, end = lfoSavedRates.length - 1
+  while (end - start > 1) {
+    const middle = (start + end) >> 1
+    if (raw < lfoSavedRates[middle][0]) end = middle
+    else start = middle
+  }
+  const [lowPosition, lowLogHz] = lfoSavedRates[start]
+  const [highPosition, highLogHz] = lfoSavedRates[end]
+  return Math.exp(blend(lowLogHz, highLogHz, (raw - lowPosition) / (highPosition - lowPosition)))
+}
 
 export const controls = {
   4(m) {
@@ -38,6 +192,7 @@ export const controls = {
     const { p, unit, put, options: o, random } = m
     const reset = edge(), period = tap(m.f32(4, 0.5) * sampleRate)
     let phase = 0, held = 2 * random() - 1, odd = false
+    let lastPosition, interpolatedRate
     return () => {
       if (reset(p('phase_reset'))) phase = 0
       const position = clamp(p('cv_control'))
@@ -49,9 +204,13 @@ export const controls = {
       else if (position <= lfoBenchPosition) {
         const progress = ((position / lfoSlowPosition) ** lfoBenchExponent - 1) / lfoBenchSpan
         hz = blend(lfoSlowRate, lfoBenchRate, progress)
-      }
-      else if (position < 0.25) hz = blend(lfoBenchRate, 1.53, (position - lfoBenchPosition) / (0.25 - lfoBenchPosition))
-      else hz = unit('cv_control')
+      } else if (position < 0.5) {
+        if (position !== lastPosition) {
+          lastPosition = position
+          interpolatedRate = interpolateLfoRate(position)
+        }
+        hz = interpolatedRate
+      } else hz = unit('cv_control')
       const y = o.waveform === 'random' ? held : wave(o.waveform, phase + 2 * (p('phase_input', 0.5) - 0.5),
         0.5 + 0.45 * (2 * p('swing_amount', 0.5) - 1))
       put('output', o.output === '-1 to 1' ? y : 0.5 + 0.5 * y)
@@ -226,7 +385,12 @@ function routeSwitch({ id, p, put, options }) {
   const count = input ? options.num_inputs : options.num_outputs
   const keys = Array.from({ length: count }, (_, i) => prefix + (input ? 'input_' : 'output_') + (i + 1))
   const select = id === 32 ? 'out_select' : 'in_select'
-  const index = () => Math.round(clamp(p(select)) * count) - 1
+  // Multi-channel audio switches span channel 1 at 0 CV to the last at 1 CV.
+  // A single-channel switch still uses its selector as an on/off gate.
+  const audioSelector = prefix === 'audio_' && count > 1
+  const index = () => audioSelector
+    ? Math.round(clamp(p(select)) * (count - 1))
+    : Math.round(clamp(p(select)) * count) - 1
   if (input) return () => put(prefix + 'output', p(keys[index()]))
   return () => {
     const selected = index()

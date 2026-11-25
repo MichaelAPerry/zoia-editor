@@ -58,23 +58,23 @@ The graph runs in dependency order per sample. Back edges found by depth-first t
 | Audio Mixer, Audio Balance, Audio Panner, Stereo Spread | Approximate | Channel gain, mono/stereo summing, linear crossfade, pan laws, mid/side gain or Haas delay. |
 | Value, Multiplier, CV Invert, CV Mixer | Exact for basic math | Bipolar or unipolar Value, CV product and sign inversion, and polarized summing or average. |
 | Sample and Hold, Random, Noise, Comparator | Approximate | Thresholded sampling and tracking, seeded pseudorandom CV or white noise, threshold comparison. |
-| LFO, Oscillator | Approximate | Standard waveforms with approximate CV rate/pitch, phase, duty, and tap controls. Oscillator waves can alias. |
+| LFO, Oscillator | Approximate | Standard waveforms with phase, duty and tap controls. CV LFO uses a saved-rate curve with measured slow anchors. Oscillator waves can alias. |
 | ADSR, Slew Limiter, Env Follower | Approximate | Linear envelope stages and slew, one-pole amplitude tracking. |
 | SV Filter, Multi Filter, Tone Control | Approximate | State-variable low/band/high-pass and biquad shelving and peak EQ. |
 | Delay Line, CV Delay, Buffer Delay | Approximate overall | Sample-addressed delay, optional fractional interpolation for Delay Line, and 64 samples per Buffer Delay buffer. Time and tempo conversion are estimated. Delay Line memory saturates at full scale. |
-| Delay w/Mod, Ping Pong Delay | Approximate | Interpolated echo, recirculating or cross-channel feedback, tone models based on feedback low-pass filtering, and tap ratios. |
+| Delay w/Mod, Ping Pong Delay | Approximate | Interpolated echo, recirculating or cross-channel feedback, tone models based on feedback low-pass filtering, and tap ratios. Delay w/Mod uses the linear range from saved delay times. |
 | Reverse Delay | Approximate | Reverses successive capture windows with resampled pitch, tap control and feedback. |
 | Univibe | Approximate | Vibrato and swept allpass stages with resonance and wet/dry mix. |
-| Chorus, Vibrato, Tremolo, Phaser, Flanger | Approximate | Modulated delays, gain and cascaded allpasses. Several model and waveform variants share an algorithm. |
+| Chorus, Vibrato, Tremolo, Phaser, Flanger | Approximate | Modulated delays, gain and cascaded allpasses. Flanger starts from its saved tap period. Several model and waveform variants share an algorithm. |
 | Diffuser, All Pass Filter | Approximate | Cascaded modulated delay allpasses and first-order allpasses. |
-| Reverb Lite, Plate Reverb, Hall Reverb, Room Reverb, Ghostverb | Approximate | Freeverb-style damped combs and serial allpasses. Sizes, damping, and EQ vary by model. Ghostverb adds modulation and coloration. |
-| OD & Distortion, Fuzz | Approximate | Soft or hard clipping with model-dependent filtering and a DC blocker after the clipping stage. |
+| Reverb Lite, Plate Reverb, Hall Reverb, Room Reverb, Ghostverb | Approximate | Freeverb-style damped combs and serial allpasses. Sizes, damping, and EQ vary by model. Ghostverb adds modulation and low-frequency feedback loss, with wet peak and decay calibrated at 25% and 75%. |
+| OD & Distortion, Fuzz | Approximate | Soft or hard clipping with model-dependent filtering and a DC blocker after clipping. Edgy has a narrow hard clip and Fuzz uses the configured input drive. |
 | Bit Crusher, Aliaser | Approximate | Amplitude quantization and sample-rate reduction. |
 | Compressor, Gate | Approximate | Peak envelope and gain control, with stereo linking and optional external sidechain. |
 | Logic Gate | Approximate | Boolean operations on thresholded CV, with parity for multi-input XOR and XNOR. |
 | Clock Divider, Sequencer, Trigger | Approximate | Tap or CV clock, pulse generation, and saved multitrack steps. |
 | Stompswitch, Pushbutton, UI Button, Euro Pushbutton 1–2 | Approximate | Static initial states and manual `state` override. UI Button display is ignored. |
-| In Switch, Out Switch, Audio In Switch, Audio Out Switch | Approximate | Stored or CV-controlled selectors with discrete switching. |
+| In Switch, Out Switch, Audio In Switch, Audio Out Switch | Approximate | Stored or CV-controlled selectors with discrete switching. Multi-channel audio switches select channel 1 at 0 CV. |
 | Audio Multiply, Inverter | Exact at full-scale levels | Bipolar sample product with output saturation, and sign inversion. |
 | CV Rectify | Exact | Absolute value. |
 | CV Flip Flop | Approximate | Saved latch state with thresholded rising-edge toggles. |
@@ -93,7 +93,7 @@ The graph runs in dependency order per sample. Back edges found by depth-first t
 ## Layout and scaling sources
 
 - Fixed block indices, option values, default knobs, and scaling anchors come from the zoia_lib module index and binary parser. Packed knob order follows `param_defaults.order` within the active layout, with corpus-informed overrides for delay effects and Plate Reverb. Plate Reverb stores mix, decay, low EQ and high EQ in that order. The corpus also places Sequencer tracks at hardware blocks 34–41, Tremolo depth at block 4 and its audio outputs at 5–6, and exposes both Audio Mixer outputs when panning is enabled. Metadata retains its original GPL-3.0 provenance. [zoia_lib](https://github.com/meanmedianmoge/zoia_lib) · [License](../zoiacodec/LICENSE)
-- The simulator linearly interpolates ordinary anchors and uses geometric interpolation between widely spaced positive Hz or time anchors. VCA and feedback use linear amplitude. Delay Line uses an exponential curve for its unclocked time knob, with calibration for the 1 s interpolated setting and a separate linear-CV mode. [zoia_lib](https://github.com/meanmedianmoge/zoia_lib)
+- The simulator linearly interpolates ordinary and evenly spaced anchors and uses geometric interpolation between widely spaced positive Hz or time anchors. VCA and feedback use linear amplitude. Delay Line uses an exponential curve for its unclocked time knob, with calibration for the 1 s interpolated setting and a separate linear-CV mode. [zoia_lib](https://github.com/meanmedianmoge/zoia_lib)
 - Raw connection strength `10000` is unity. CV uses `raw / 10000`. Audio uses `(raw - 10000) / 100` dB, inferred from corpus values such as `9398` (roughly −6 dB) and `11200` (+12 dB). Raw zero mutes. [Binary recon](../RECON.md)
 - The coverage runner and binary smoke tests use the local JavaScript decoder. Its audition fields were compared with the Python codec on Test Thru and all corpus files available at the time of the audit (414 files). Python remains the full decoder and encoder for editor metadata and round trips.
 
